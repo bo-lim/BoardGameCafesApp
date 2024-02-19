@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
+import yaml
+
+with open('settings.yaml') as f:
+    my_settings = yaml.full_load(f)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # APPs
-    'user',
+    # 'user',
     # Library
     'rest_framework',
     'rest_framework_simplejwt',
@@ -97,10 +101,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
         'NAME': 'xe',
-        'USER': 'djangouser',
-        'PASSWORD': 'oracle',
-        'HOST': 'localhost',
-        'PORT': '1521'
+        'USER': my_settings['USER'],
+        'PASSWORD': my_settings['PASSWORD'],
+        'HOST': my_settings['HOST'],
+        'PORT': my_settings['PORT']
     }
 }
 
@@ -138,7 +142,7 @@ SIMPLE_JWT = {
 }
 
 # user
-AUTH_USER_MODEL = 'user.User'
+# AUTH_USER_MODEL = 'user.User'
 
 
 # Password validation

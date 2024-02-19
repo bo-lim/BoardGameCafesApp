@@ -4,3 +4,4 @@ markdown
 django-filter
 cx_Oracle
 djangorestframework-simplejwt
+pyyaml
