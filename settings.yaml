@@ -1,4 +1,4 @@
-USER: 
-PASSWORD: 
+USER: djangouser
+PASSWORD: oracle
 HOST: localhost
-PORT: 
+PORT: 1521
