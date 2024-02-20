@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # APPs
-    # 'user',
+    'user',
     # Library
     'rest_framework',
     'rest_framework_simplejwt',
@@ -142,7 +142,7 @@ SIMPLE_JWT = {
 }
 
 # user
-# AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'user.User'
 
 
 # Password validation
