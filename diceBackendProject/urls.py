@@ -16,13 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from cafes.views import CafeListAPI, CafeReviewsListAPI, MenuItemsListAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('user/', include('user.urls')),
-    path('api/cafe/', CafeListAPI.as_view()),
-    path('api/cafeReviews', CafeReviewsListAPI.as_view()),
-    path('api/menuItems', MenuItemsListAPI.as_view())
+    path('cafe/', include('cafes.urls'))
 ]

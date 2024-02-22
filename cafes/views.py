@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 
 from cafes.serializers import CafeReviewsSerializer, CafesSerializer, MenuItemsSerializer
 from cafes.models import Cafes, CafeReviews, MenuItems
@@ -25,5 +26,17 @@ class MenuItemsListAPI(APIView) :
         print(queryset)
         serialzer = MenuItemsSerializer(queryset, many=True)
         return Response(serialzer.data)
+
+class SearchCafeReviewsAPI(generics.ListAPIView):
+    serialzer = CafeReviewsSerializer
+    def get(self) :
+        obj = CafeReviews.objects.get(pk = self.kwargs['pk'])
+        return obj
+
+class SearchMenuItemAPI(generics.ListAPIView):
+    serialzer = MenuItemsSerializer
+    def get(self) :
+        obj = MenuItems.objects.get(pk = self.kwargs['pk'])
+        return obj
 
 # Create your views here.
