@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     # Library
     'rest_framework',
     'rest_framework_simplejwt',
+
+    'cafes',
 ]
 
 
