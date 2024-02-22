@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 from django.test import TestCase
 
 import cx_Oracle
@@ -15,3 +17,4 @@ cursor.close()
 conn.close()
 
 # Create your tests here.
+>>>>>>> 5d3a31e260116d730981cf0252f70079f3b9cc9f
