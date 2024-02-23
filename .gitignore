@@ -1,6 +1,10 @@
 # settings
 settings.yaml
 
+user/migrations/
+cafes/migrations/
+boardgames/migrations/
+
 # Logs
 logs
 *.log
