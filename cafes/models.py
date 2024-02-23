@@ -2,10 +2,10 @@ from django.db import models
 
 class Cafes(models.Model):
     CafeID = models.AutoField(primary_key=True)
-    Name = models.CharField(max_length=15, null=False)
+    Name = models.CharField(max_length=50, null=False)
     Location = models.CharField(max_length=100)
-    PhoneNumber = models.IntegerField()
-    OperatingHour = models.CharField(max_length=20)
+    PhoneNumber = models.CharField(max_length=30)
+    OperatingHour = models.CharField(max_length=50)
     Image = models.FileField(upload_to = 'uploads/')
 
     def __str__(self):

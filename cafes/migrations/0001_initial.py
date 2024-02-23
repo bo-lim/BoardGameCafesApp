@@ -16,10 +16,10 @@ class Migration(migrations.Migration):
             name='Cafes',
             fields=[
                 ('CafeID', models.IntegerField(primary_key=True, serialize=False)),
-                ('Name', models.CharField(max_length=15)),
+                ('Name', models.CharField(max_length=50)),
                 ('Location', models.CharField(max_length=100)),
                 ('PhoneNumber', models.IntegerField()),
-                ('OperatingHour', models.CharField(max_length=20)),
+                ('OperatingHour', models.CharField(max_length=50)),
                 ('Image', models.FileField(upload_to='uploads/')),
             ],
         ),
