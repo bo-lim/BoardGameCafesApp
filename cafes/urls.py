@@ -1,11 +1,22 @@
 from django.contrib import admin
 from django.urls import include, path
+'''
 from .views import MenuItemsListAPI, SearchCafeReviewsAPI, CafeListAPI, CafeReviewsListAPI, SearchMenuItemAPI
+'''
+from .views import CafeAPI, CafeReviewAPI, MenuItemAPI
+from rest_framework import routers
+
+cafe_router = routers.DefaultRouter()
+cafe_router.register(r'cafe_p', CafeAPI, basename="cafe_post")
+
+cafe_review_router = routers.DefaultRouter()
+cafe_review_router.register(r'reviews_p', CafeReviewAPI, basename="review_post")
+
+menu_router = routers.DefaultRouter()
+menu_router.register(r'menu_p', MenuItemAPI, basename="menu_post")
 
 urlpatterns = [
-    path('cafeList', CafeListAPI.as_view()),
-    path('cafeReviewList', CafeReviewsListAPI.as_view()),
-    path('menuItemList', MenuItemsListAPI.as_view()),
-    path('searchCafeReview/<int:pk>', SearchCafeReviewsAPI.as_view()),
-    path('searchMenuItemReview/<int:pk>', SearchMenuItemAPI.as_view()),
+    path('', include(cafe_router.urls)),
+    path('review/', include(cafe_review_router.urls)),
+    path('menuItem/', include(menu_router.urls)),
 ]
