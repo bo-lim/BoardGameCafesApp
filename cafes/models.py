@@ -16,7 +16,7 @@ class CafeReviews(models.Model):
     Cafe_ReviewID = models.AutoField(primary_key=True)
     UserID = models.IntegerField(null=False)
     CafeID = models.ForeignKey(Cafes, on_delete=models.CASCADE)
-    Rating = models.FloatField(max_length=10, null=False)
+    Rating = models.FloatField(max_length=10, null=False, default=0)
     Comment = models.CharField(max_length=200, null=False)
     Image = models.FileField(upload_to = 'uploads/review/', null=True)
 
