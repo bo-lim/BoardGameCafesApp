@@ -11,6 +11,50 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from django.shortcuts import render, get_object_or_404
 
+class CheckView(APIView):
+    def get(self, request):
+        queryset = User.objects.filter(email__exact=request.GET['email'])
+        if queryset.count() > 0:
+            return Response({"message":"exist"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message":"notExist"}, status=status.HTTP_200_OK)
+        
+class MyPageView(APIView):
+    def post(self, request):
+        newName = request.POST['newName']
+        queryset = User.objects.filter(email__exact=request.POST['email']).update(nickname=newName)
+        oldCookie = request.COOKIES.get('access')
+        payload = jwt.decode(oldCookie, SECRET_KEY, algorithms=['HS256'])
+        pk = payload.get('user_id')
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(instance=user)
+
+        if serializer.is_valid():
+            serializer.data.update('nickname')
+            user = serializer.save()
+            
+            token = TokenObtainPairSerializer.get_token(user)
+            refresh_token = str(token)
+            access_token = str(token.access_token)
+            res = Response(
+                {
+                    "user": serializer.data,
+                    "message": "register successs",
+                    "token": {
+                        "access": access_token,
+                        "refresh": refresh_token,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+            res.delete_cookie("access")
+            res.delete_cookie("refresh")
+
+            res.set_cookie("access", access_token, httponly=True)
+            res.set_cookie("refresh", refresh_token, httponly=True)
+
+        
+        return res
 
 class RegisterView(APIView):
     def post(self, request):
@@ -89,7 +133,7 @@ class AuthView(APIView):
                 },
                 status=status.HTTP_200_OK,
             )
-            # jwt 토큰 => 쿠키에 저장
+
             res.set_cookie("access", access_token, httponly=True)
             res.set_cookie("refresh", refresh_token, httponly=True)
             return res
