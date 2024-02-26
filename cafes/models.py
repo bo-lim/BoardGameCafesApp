@@ -9,7 +9,7 @@ class Cafes(models.Model):
     Image = models.FileField(upload_to = 'uploads/cafe/', null=True)
 
     def __str__(self):
-        return self.Name
+        return str(self.CafeID)
 
 
 class CafeReviews(models.Model):

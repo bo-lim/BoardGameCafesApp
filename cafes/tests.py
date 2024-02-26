@@ -1,5 +1,5 @@
 from django.test import TestCase
-
+from cafes.models import Cafes, CafeReviews, MenuItems
 import cx_Oracle
 dns = cx_Oracle.makedsn('localhost', 1522, 'xe')
 conn = cx_Oracle.connect('c##p_test', 'oracle', dns)
@@ -13,5 +13,7 @@ for record in cursor:
 
 cursor.close()
 conn.close()
+
+
 
 # Create your tests here.
