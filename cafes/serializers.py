@@ -14,5 +14,13 @@ class CafeReviewsSerializer(serializers.ModelSerializer):
 
 class MenuItemsSerializer(serializers.ModelSerializer) :
     class Meta :
-        model = CafeReviews
+        model = MenuItems
         fields = '__all__'
+
+class ReviewCountSerializer(serializers.Serializer):
+    CafeID = serializers.IntegerField()
+    review_count = serializers.IntegerField()
+
+class ReviewAvgSerializer(serializers.Serializer):
+    CafeID = serializers.IntegerField()
+    avg_rating = serializers.FloatField()
