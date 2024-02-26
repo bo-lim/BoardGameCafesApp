@@ -78,8 +78,6 @@ class CafeReviewAPI(viewsets.ModelViewSet):
     queryset = CafeReviews.objects.all()
     serializer_class = CafeReviewsSerializer
 
-    
-
     @action(detail=False, methods=['post'])
     def review_cnt(self, request):
         cafe_id = request.query_params.get('cafe_id')
@@ -88,6 +86,17 @@ class CafeReviewAPI(viewsets.ModelViewSet):
         
         reviews_count = CafeReviews.objects.filter(CafeID=cafe_id).count()
         return Response({"reviews_count": reviews_count}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def search_by_userid(self, request):
+        cafe_id = request.query_params.get('cafe_id')
+
+        if not cafe_id:
+            return Response({'error': 'cafeid is required'}, status=400)
+        
+        queryset = CafeReviews.objects.filter(**{'UserID': cafe_id})
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class MenuItemAPI(viewsets.ModelViewSet):
