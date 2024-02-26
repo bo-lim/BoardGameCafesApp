@@ -21,40 +21,51 @@ class CheckView(APIView):
         
 class MyPageView(APIView):
     def post(self, request):
-        newName = request.POST['newName']
-        queryset = User.objects.filter(email__exact=request.POST['email']).update(nickname=newName)
-        oldCookie = request.COOKIES.get('access')
-        payload = jwt.decode(oldCookie, SECRET_KEY, algorithms=['HS256'])
-        pk = payload.get('user_id')
-        user = get_object_or_404(User, pk=pk)
-        serializer = UserSerializer(instance=user)
-
-        if serializer.is_valid():
-            serializer.data.update('nickname')
-            user = serializer.save()
-            
-            token = TokenObtainPairSerializer.get_token(user)
-            refresh_token = str(token)
-            access_token = str(token.access_token)
-            res = Response(
-                {
-                    "user": serializer.data,
-                    "message": "register successs",
-                    "token": {
-                        "access": access_token,
-                        "refresh": refresh_token,
-                    },
-                },
-                status=status.HTTP_200_OK,
-            )
-            res.delete_cookie("access")
-            res.delete_cookie("refresh")
-
-            res.set_cookie("access", access_token, httponly=True)
-            res.set_cookie("refresh", refresh_token, httponly=True)
-
         
+        User.objects.filter(email__exact=request.POST['email']).update(nickname=request.POST['nickname'],
+                                                                            gender=request.POST['gender'],
+                                                                            age=request.POST['age'])
+        return Response(status=status.HTTP_202_ACCEPTED)
+        '''
+        try:
+            access = request.COOKIES.get('access')
+            print('accesss')
+            payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
+            pk = payload.get('user_id')
+            user = get_object_or_404(User, pk=pk)
+        except(jwt.exceptions.ExpiredSignatureError):
+            data = {'refresh': request.COOKIES.get('refresh', None)}
+            serializer = TokenRefreshSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                access = serializer.data.get('access', None)
+                refresh = serializer.data.get('refresh', None)
+                print('refresh')
+                payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
+                pk = payload.get('user_id')
+                user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(instance=user)
+        token = TokenObtainPairSerializer.get_token(user)
+        refresh_token = str(token)
+        access_token = str(token.access_token)
+        res = Response(
+            {
+                "user": serializer.data,
+                "message": "successs",
+                "token": {
+                    "access": access_token,
+                    "refresh": refresh_token,
+                },
+            },
+            status=status.HTTP_200_OK,
+        )
+        res.delete_cookie("access")
+        res.delete_cookie("refresh")
+
+        res.set_cookie("access", access_token, httponly=True)
+        res.set_cookie("refresh", refresh_token, httponly=True)
         return res
+        '''
+
 
 class RegisterView(APIView):
     def post(self, request):
