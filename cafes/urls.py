@@ -10,13 +10,13 @@ from .views import CafeAPI, CafeReviewAPI, MenuItemAPI
 from rest_framework import routers
 
 cafe_router = routers.DefaultRouter()
-cafe_router.register(r'cafe_p', CafeAPI, basename="cafe_post")
+cafe_router.register(r'api', CafeAPI, basename="cafe_post")
 
 cafe_review_router = routers.DefaultRouter()
-cafe_review_router.register(r'reviews_p', CafeReviewAPI, basename="review_post")
+cafe_review_router.register(r'api', CafeReviewAPI, basename="review_post")
 
 menu_router = routers.DefaultRouter()
-menu_router.register(r'menu_p', MenuItemAPI, basename="menu_post")
+menu_router.register(r'api', MenuItemAPI, basename="menu_post")
 
 urlpatterns = [
     path('', include(cafe_router.urls)),

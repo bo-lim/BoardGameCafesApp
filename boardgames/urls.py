@@ -6,7 +6,7 @@ from .views import BoardGameView
 from rest_framework import routers
 
 boardgame_router = routers.DefaultRouter()
-boardgame_router.register(r'bgv', BoardGameView, basename="BoardGameView")
+boardgame_router.register(r'api', BoardGameView, basename="BoardGameView")
 
 urlpatterns = [
     path('', include(boardgame_router.urls)),

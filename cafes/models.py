@@ -14,7 +14,7 @@ class Cafes(models.Model):
 
 
 class CafeReviews(models.Model):
-    Cafe_ReviewID = models.AutoField(primary_key=True)
+    CafeReviewID = models.AutoField(primary_key=True)
     UserID = models.ForeignKey(User, on_delete=models.CASCADE)
     CafeID = models.ForeignKey(Cafes, on_delete=models.CASCADE)
     Rating = models.FloatField(max_length=10, null=True, default=0)
