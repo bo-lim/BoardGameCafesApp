@@ -9,7 +9,7 @@ class BoardGames(models.Model):
     AgeLimit = models.IntegerField(default=0)
     Description = models.TextField(default='')
     VideoURL = models.CharField(max_length=100, default='')
-    Image = models.FileField(upload_to = 'uploads/boardgame/', null=True)
+    Image = models.FileField(upload_to = 'boardgame/', null=True)
     
     def __str__(self):
         return str(self.Name)

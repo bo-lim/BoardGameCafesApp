@@ -6,3 +6,4 @@ cx_Oracle
 djangorestframework-simplejwt
 pyyaml
 django-cors-headers
+django-redis
