@@ -19,7 +19,7 @@ class CafeReviews(models.Model):
     CafeID = models.ForeignKey(Cafes, on_delete=models.CASCADE)
     Rating = models.FloatField(max_length=10, null=True, default=0)
     Comment = models.CharField(max_length=200, null=False)
-    Image = models.FileField(upload_to = 'cafeReview/', null=True)
+    Image = models.FileField(upload_to = 'cafereview/', null=True)
     Date = models.DateTimeField(auto_now=True)
 
     def __str__(self):

@@ -22,7 +22,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),
-    re_path(r'.*uploads/cafe.*', include('cafes.urls')),
     path('cafe/', include('cafes.urls')),
     path('boardgame/', include('boardgames.urls')),
 ]

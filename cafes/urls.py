@@ -20,11 +20,7 @@ menu_router.register(r'menu_p', MenuItemAPI, basename="menu_post")
 
 urlpatterns = [
     path('', include(cafe_router.urls)),
-    re_path(r'.*uploads/cafe/.*',include(cafe_router.urls)),
-    
     path('review/', include(cafe_review_router.urls)),
-    re_path(r'.*uploads/cafeReview/.*',include(cafe_review_router.urls)),
-    
     path('menuItem/', include(menu_router.urls)),
 ]
 
