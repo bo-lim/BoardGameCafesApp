@@ -1,4 +1,5 @@
 from django.db import models
+from user.models import User
 
 class Cafes(models.Model):
     CafeID = models.AutoField(primary_key=True)
@@ -14,7 +15,7 @@ class Cafes(models.Model):
 
 class CafeReviews(models.Model):
     Cafe_ReviewID = models.AutoField(primary_key=True)
-    UserID = models.IntegerField(null=False)
+    UserID = models.ForeignKey(User.ID, on_delete=models.CASCADE)
     CafeID = models.ForeignKey(Cafes, on_delete=models.CASCADE)
     Rating = models.FloatField(max_length=10, null=True, default=0)
     Comment = models.CharField(max_length=200, null=False)

@@ -89,12 +89,12 @@ class CafeReviewAPI(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def search_by_userid(self, request):
-        cafe_id = request.query_params.get('cafe_id')
+        user_id = request.query_params.get('user_id')
 
-        if not cafe_id:
-            return Response({'error': 'cafeid is required'}, status=400)
+        if not user_id:
+            return Response({'error': 'userid is required'}, status=400)
         
-        queryset = CafeReviews.objects.filter(**{'UserID': cafe_id})
+        queryset = CafeReviews.objects.filter(**{'UserID': user_id})
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
