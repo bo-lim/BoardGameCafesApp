@@ -7,7 +7,7 @@ class Cafes(models.Model):
     Location = models.CharField(max_length=100)
     PhoneNumber = models.CharField(max_length=30)
     OperatingHour = models.CharField(max_length=50)
-    Image = models.FileField(upload_to = 'uploads/cafe/', null=True)
+    Image = models.FileField(upload_to = 'cafe/', null=True)
 
     def __str__(self):
         return str(self.CafeID)
@@ -19,7 +19,7 @@ class CafeReviews(models.Model):
     CafeID = models.ForeignKey(Cafes, on_delete=models.CASCADE)
     Rating = models.FloatField(max_length=10, null=True, default=0)
     Comment = models.CharField(max_length=200, null=False)
-    Image = models.FileField(upload_to = 'uploads/review/', null=True)
+    Image = models.FileField(upload_to = 'review/', null=True)
 
     def __str__(self):
         return str(self.Cafe_ReviewID)

@@ -28,7 +28,7 @@ class MyPageView(APIView):
         return Response(status=status.HTTP_202_ACCEPTED)
         '''
         try:
-            access = request.COOKIES.get('access')
+            access = request.COOKIES.get('access')ss
             print('accesss')
             payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
             pk = payload.get('user_id')
