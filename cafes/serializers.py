@@ -18,9 +18,9 @@ class MenuItemsSerializer(serializers.ModelSerializer) :
         fields = '__all__'
 
 class ReviewCountSerializer(serializers.Serializer):
-    CafeID = serializers.IntegerField()
+    Name = serializers.CharField()
     review_count = serializers.IntegerField()
 
 class ReviewAvgSerializer(serializers.Serializer):
-    CafeID = serializers.IntegerField()
+    Name = serializers.CharField()
     avg_rating = serializers.FloatField()

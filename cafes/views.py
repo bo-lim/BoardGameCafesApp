@@ -33,7 +33,7 @@ class CafeAPI(viewsets.ModelViewSet):
 
         if not name_value:
             return Response({'error': 'Name_value are required'}, status=400)
-        queryset = Cafes.objects.filter(**{'Name': name_value})
+        queryset = Cafes.objects.filter(Name__contains=name_value)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -62,16 +62,42 @@ class CafeAPI(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def cafe_review_rank(self, request):
-        cafe_reviews_count = CafeReviews.objects.values('CafeID').annotate(review_count=Count('CafeID')).order_by('-review_count')
+        cafe_reviews_count = Cafes.objects.values('Name').annotate(review_count=Count('CafeID')).order_by('-review_count')
 
         serializer = ReviewCountSerializer(cafe_reviews_count, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
+    def cafe_review_count(self, request):
+        cafe_name = request.query_params.get('cafe_name')
+        
+        if not cafe_name:
+            return Response({'error': 'cafe name is required'}, status=400)
+
+        queryset = Cafes.objects.annotate(review_count=Count('cafereviews'))
+        queryset = queryset.filter(Name=cafe_name)
+        
+        serializer = ReviewCountSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
     def cafe_review_avg_rank(self, request):
-        cafe_reviews_avg = CafeReviews.objects.values('CafeID').annotate(avg_rating=Avg('Rating')).order_by('-avg_rating')
+        cafe_reviews_avg = Cafes.objects.values('Name').annotate(avg_rating=Avg('cafereviews')).order_by('-avg_rating')
+
 
         serializer = ReviewAvgSerializer(cafe_reviews_avg, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def cafe_review_avg(self, request):
+        cafe_name = request.query_params.get('cafe_name')
+
+        if not cafe_name:
+            return Response({'error': 'cafe name is required'}, status=400)
+        
+        queryset = Cafes.objects.annotate(avg_rating=Avg('cafereviews')).filter(Name=cafe_name)
+
+        serializer = ReviewAvgSerializer(queryset, many=True)
         return Response(serializer.data)
 
 class CafeReviewAPI(viewsets.ModelViewSet):
