@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls.static import static
+
+from diceBackendProject import settings
 '''
 from .views import MenuItemsListAPI, SearchCafeReviewsAPI, CafeListAPI, CafeReviewsListAPI, SearchMenuItemAPI
 '''
@@ -20,3 +23,6 @@ urlpatterns = [
     path('review/', include(cafe_review_router.urls)),
     path('menuItem/', include(menu_router.urls)),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

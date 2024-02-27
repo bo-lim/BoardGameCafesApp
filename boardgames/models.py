@@ -7,7 +7,7 @@ class BoardGames(models.Model):
     MaxPlayers = models.IntegerField(default=0)
     AgeLimit = models.IntegerField(default=0)
     Description = models.TextField(default='')
-    VideoURL = models.CharField(max_length=100, null=False)
+    VideoURL = models.CharField(max_length=100, default='')
     Image = models.FileField(upload_to = 'uploads/boardgame/', null=True)
     
     def __str__(self):
