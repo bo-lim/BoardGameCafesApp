@@ -20,6 +20,7 @@ class CafeReviews(models.Model):
     Rating = models.FloatField(max_length=10, null=True, default=0)
     Comment = models.CharField(max_length=200, null=False)
     Image = models.FileField(upload_to = 'cafeReview/', null=True)
+    Date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.Cafe_ReviewID)
