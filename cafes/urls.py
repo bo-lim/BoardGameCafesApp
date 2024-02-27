@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.conf.urls.static import static
 
 from diceBackendProject import settings
@@ -20,7 +20,11 @@ menu_router.register(r'menu_p', MenuItemAPI, basename="menu_post")
 
 urlpatterns = [
     path('', include(cafe_router.urls)),
+    re_path(r'.*uploads/cafe/.*',include(cafe_router.urls)),
+    
     path('review/', include(cafe_review_router.urls)),
+    re_path(r'.*uploads/cafeReview/.*',include(cafe_review_router.urls)),
+    
     path('menuItem/', include(menu_router.urls)),
 ]
 
