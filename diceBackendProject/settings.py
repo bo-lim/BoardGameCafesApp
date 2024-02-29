@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
 ]
-
+TIME_ZONE = 'Asia/Seoul'
+USE_TZ = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -104,7 +105,7 @@ WSGI_APPLICATION = 'diceBackendProject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
@@ -115,7 +116,20 @@ DATABASES = {
         'PORT': my_settings['PORT']
     }
 }
-
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dice',
+        'USER': my_settings['USER'],
+        'PASSWORD': my_settings['PASSWORD'],
+        'HOST': my_settings['HOST'],
+        'PORT': my_settings['PORT'],
+        'OPTIONS': {
+            'init_command':'SET storage_engine=MyISAM'
+        }
+    }
+}
 # jwt settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
