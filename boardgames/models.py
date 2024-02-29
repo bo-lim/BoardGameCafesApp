@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import User
+from cafes.models import Cafes
 
 class BoardGames(models.Model):
     GameID = models.AutoField(primary_key=True)
@@ -17,7 +18,7 @@ class BoardGames(models.Model):
 class BoardGameReviews(models.Model):
     Board_ReviewID = models.AutoField(primary_key=True)
     UserID = models.ForeignKey(User, on_delete=models.CASCADE)
-    BoardGameReviewsID = models.ForeignKey(BoardGames, on_delete=models.CASCADE)
+    BoardGameID = models.ForeignKey(BoardGames, on_delete=models.CASCADE)
     Rating = models.FloatField(max_length=10, null=True, default=0)
     Comment = models.CharField(max_length=200, null=False)
     Image = models.FileField(upload_to = 'review/', null=True)
@@ -25,3 +26,8 @@ class BoardGameReviews(models.Model):
 
     def __str__(self):
         return str(self.Cafe_ReviewID)
+
+class CafeBoardGames(models.Model):
+    CafeID = models.ForeignKey(Cafes, on_delete=models.CASCADE)
+    GameID = models.ForeignKey(BoardGames, on_delete=models.CASCADE)
+    Quantity = models.FloatField(max_length=10, null=True, default=0)
