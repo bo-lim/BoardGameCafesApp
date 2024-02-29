@@ -2,10 +2,12 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, F, Value
+from django.db.models.functions import Coalesce
 
 from cafes.serializers import CafeReviewsSerializer, CafesSerializer, MenuItemsSerializer, ReviewCountSerializer, ReviewAvgSerializer
 from cafes.models import Cafes, CafeReviews, MenuItems
+from boardgames.models import BoardGames, CafeBoardGames
 
 class CafeAPI(viewsets.ModelViewSet):
     queryset = Cafes.objects.all()
@@ -62,9 +64,9 @@ class CafeAPI(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def cafe_review_rank(self, request):
-        cafe_reviews_count = Cafes.objects.values('Name').annotate(review_count=Count('CafeID')).order_by('-review_count')
+        queryset = Cafes.objects.values('Name').annotate(review_count=Count('cafereviews')).order_by('-review_count')
 
-        serializer = ReviewCountSerializer(cafe_reviews_count, many=True)
+        serializer = ReviewCountSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
@@ -74,18 +76,17 @@ class CafeAPI(viewsets.ModelViewSet):
         if not cafe_name:
             return Response({'error': 'cafe name is required'}, status=400)
 
-        queryset = Cafes.objects.annotate(review_count=Count('cafereviews'))
-        queryset = queryset.filter(Name=cafe_name)
+        queryset = Cafes.objects.values('Name').annotate(review_count=Count('cafereviews')).filter(Name=cafe_name)
         
         serializer = ReviewCountSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def cafe_review_avg_rank(self, request):
-        cafe_reviews_avg = Cafes.objects.values('Name').annotate(avg_rating=Avg('cafereviews')).order_by('-avg_rating')
+        #queryset = Cafes.objects.values('Name').annotate(avg_rating=Avg('cafereviews__Rating')).order_by('-avg_rating')
+        queryset = Cafes.objects.values('Name').prefetch_related("cafereviews").annotate(avg_rating=Coalesce(Avg('cafereviews__Rating'), Value(0.0))).order_by('-avg_rating')
 
-
-        serializer = ReviewAvgSerializer(cafe_reviews_avg, many=True)
+        serializer = ReviewAvgSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
@@ -95,23 +96,40 @@ class CafeAPI(viewsets.ModelViewSet):
         if not cafe_name:
             return Response({'error': 'cafe name is required'}, status=400)
         
-        queryset = Cafes.objects.annotate(avg_rating=Avg('cafereviews')).filter(Name=cafe_name)
+        #queryset = Cafes.objects.values('Name').annotate(avg_rating=Avg('cafereviews__Rating')).filter(Name=cafe_name)
+        queryset = Cafes.objects.values('Name').prefetch_related("cafereviews").annotate(avg_rating=Avg('cafereviews__Rating')).filter(Name=cafe_name)
 
         serializer = ReviewAvgSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    
+    @action(detail=False, methods=['get'])
+    def search_cafe_by_game(self, request):
+        game_name = request.query_params.get('game_name')
+
+        if not game_name:
+            return Response({'error': 'game name is required'}, status=400)
+        
+        game_id = BoardGames.objects.get(Name=game_name)
+        
+        queryset = Cafes.objects.filter(cafeboardgames__GameID=game_id)
+
+        serializer = CafesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class CafeReviewAPI(viewsets.ModelViewSet):
     queryset = CafeReviews.objects.all()
     serializer_class = CafeReviewsSerializer
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['get'])
     def review_cnt(self, request):
         cafe_id = request.query_params.get('cafe_id')
         if cafe_id is None:
             return Response({"error": "Cafe ID is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         reviews_count = CafeReviews.objects.filter(CafeID=cafe_id).count()
-        return Response({"reviews_count": reviews_count}, status=status.HTTP_200_OK)
+        return Response(reviews_count, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['get'])
     def search_by_userid(self, request):
