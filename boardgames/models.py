@@ -11,6 +11,7 @@ class BoardGames(models.Model):
     Description = models.TextField(default='')
     VideoURL = models.CharField(max_length=100, default='')
     Image = models.FileField(upload_to = 'boardgame/', null=True)
+    SearchCount = models.IntegerField(default=0)
     
     def __str__(self):
         return str(self.Name)
