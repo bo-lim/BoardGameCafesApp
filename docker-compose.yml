@@ -25,8 +25,8 @@ services:
       context: .
       dockerfile: ./diceBackendProject/Dockerfile
     volumes:
-      - ./:/home
-    working_dir : /home/
+      - ./:/usr/src/app
+    working_dir : /usr/src/app/
     ports:
       - "8000:8000"
     expose:
@@ -35,6 +35,19 @@ services:
       - "db"
     depends_on:
       - db
+    networks:
+      - docker
+  nextjs:
+    container_name: nextjs
+    build:
+      context: .
+      dockerfile: ./dice-client-app/Dockerfile
+    ports:
+      - "3000:3000"
+    #volumes:
+      #- "./dice-client-app:/usr/src/next"
+      #- "/usr/src/next/node_modules"
+      #- "/usr/src/next/.d"
     networks:
       - docker
 networks:
