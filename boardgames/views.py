@@ -21,6 +21,24 @@ class BoardGameView(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     @action(detail=False, methods=['get'])
+    def search_by_id(self, request):
+        game_id = request.query_params.get('game_id')
+
+        if not game_id:
+            return Response({'error': 'boardgame id is required'}, status=400)
+
+        queryset = BoardGames.objects.filter(GameID=game_id)
+        serializer = self.get_serializer(queryset, many=True)
+        
+        for game in queryset:
+            game.SearchCount += 1
+            game.save()
+
+
+        return Response(serializer.data)
+    
+        
+    @action(detail=False, methods=['get'])
     def search_by_name(self, request):
         boardgame_name = request.query_params.get('boardgame_name')
 
@@ -55,13 +73,19 @@ class BoardGameView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
-    def boardgame_limit(shelf, request):
+    def boardgame_limit(self, request):
         age_limit = request.query_params.get('age')
 
         if not age_limit:
             return Response({'error': 'age is reauired'}, status=400)
         
         queryset = BoardGames.objects.filter(AgeLimit__lte=age_limit).order_by('-AgeLimit')
+        serializer = BoardGamesSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def search_rank(self, request):
+        queryset = BoardGames.objects.order_by('-SearchCount')
         serializer = BoardGamesSerializer(queryset, many=True)
         return Response(serializer.data)
 
