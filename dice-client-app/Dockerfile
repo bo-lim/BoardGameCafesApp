@@ -1,26 +1,14 @@
-FROM node:alpine
+FROM node:18
 
 WORKDIR /usr/src/next
 
+COPY package.json ./
+
+RUN npm install
 COPY . .
 
-#RUN npm init
-RUN npm install
-# RUN npm init
-
-
-EXPOSE 3000
-
-
-#RUN yarn install
-#RUN yarn build
-#RUN apk update && apk upgrade && apk add --no-cache bash git openssh
-
-#RUN npm install --save --bin-links false express
-
-#RUN npm update
 RUN npm run build
-
-#CMD ["yarn", "start"]
+EXPOSE 3000
+#CMD ["npm", "start"]
 
 CMD [ "npm" , "run" , "dev"]

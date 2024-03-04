@@ -22,10 +22,10 @@ services:
   app:
     container_name: django
     build:
-      context: .
-      dockerfile: ./diceBackendProject/Dockerfile
+      context: ./django
+      dockerfile: Dockerfile
     volumes:
-      - ./:/usr/src/app
+      - ./django:/usr/src/app
     working_dir : /usr/src/app/
     ports:
       - "8000:8000"
@@ -40,14 +40,14 @@ services:
   nextjs:
     container_name: nextjs
     build:
-      context: .
-      dockerfile: ./dice-client-app/Dockerfile
+      context: ./dice-client-app
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    #volumes:
-      #- "./dice-client-app:/usr/src/next"
-      #- "/usr/src/next/node_modules"
-      #- "/usr/src/next/.d"
+    volumes:
+      - "./dice-client-app:/usr/src/next"
+      - "/usr/src/next/node_modules"
+      - "/usr/src/next/.next"
     networks:
       - docker
 networks:
