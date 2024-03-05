@@ -1,4 +1,8 @@
-USER: 
-PASSWORD: 
+#USER: root
+USER: djangouser
+#PASSWORD: pass123#
+PASSWORD: oracle
+#HOST: db
 HOST: localhost
-PORT: 
+#PORT: 3306
+PORT: 1521

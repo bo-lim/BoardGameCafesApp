@@ -31,4 +31,4 @@ class BoardGameReviews(models.Model):
 class CafeBoardGames(models.Model):
     CafeID = models.ForeignKey(Cafes, on_delete=models.CASCADE)
     GameID = models.ForeignKey(BoardGames, on_delete=models.CASCADE)
-    Quantity = models.FloatField(max_length=10, null=True, default=0)
+    Quantity = models.IntegerField(null=True, default=0)
