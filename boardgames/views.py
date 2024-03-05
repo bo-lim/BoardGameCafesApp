@@ -72,6 +72,17 @@ class BoardGameView(viewsets.ModelViewSet):
         queryset = BoardGames.objects.filter(cafeboardgames__CafeID=cafe_id)
         serializer = BoardGamesSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def search_game_by_cafe_id(self, request):
+        cafe_id = request.query_params.get('cafe_id')
+
+        if not cafe_id:
+            return Response({'error': 'cafe name is reauired'}, status=400)
+    
+        queryset = BoardGames.objects.filter(cafeboardgames__CafeID=cafe_id)
+        serializer = BoardGamesSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def boardgame_limit(self, request):
@@ -132,6 +143,6 @@ class CafeBoardGamesView(viewsets.ModelViewSet):
         if not cafe_id:
             return Response({'error': 'cafeid is required'}, status=400)
         
-        queryset = CafeBoardGames.objects.filter(CafeID=cafe_id)
+        queryset = CafeBoardGames.objects.filter(GameID=cafe_id)
         serializer = CafeGamesSerializer(queryset, many=True)
         return Response(serializer.data)

@@ -116,6 +116,18 @@ class CafeAPI(viewsets.ModelViewSet):
 
         serializer = SearchByGameSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def search_cafe_by_game_id(self, request):
+        game_id = request.query_params.get('game_id')
+
+        if not game_id:
+            return Response({'error': 'game name is required'}, status=400)
+        
+        queryset = Cafes.objects.filter(cafeboardgames__GameID=game_id).annotate(review_count=Count('cafereviews'))
+
+        serializer = SearchByGameSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class CafeReviewAPI(viewsets.ModelViewSet):
@@ -141,6 +153,16 @@ class CafeReviewAPI(viewsets.ModelViewSet):
         queryset = CafeReviews.objects.filter(**{'UserID': user_id})
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def search_by_cafe_id(self, request):
+        cafe_id = request.query_params.get('cafe_id')
+        if cafe_id is None:
+            return Response({"error": "Cafe ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        queryset = CafeReviews.objects.filter(CafeID=cafe_id)
+        serializer = CafeReviewsSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MenuItemAPI(viewsets.ModelViewSet):
