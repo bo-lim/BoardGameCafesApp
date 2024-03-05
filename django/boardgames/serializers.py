@@ -18,6 +18,7 @@ class CafeBoardGamesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CafeGamesSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
     CafeID = serializers.IntegerField(source='CafeID.CafeID')
     GameID = serializers.IntegerField(source='GameID.GameID')
     Quantity = serializers.FloatField()
@@ -25,4 +26,5 @@ class CafeGamesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CafeBoardGames
-        fields = ['CafeID', 'GameID', 'Quantity', 'Name']
+        fields = ['id', 'CafeID', 'GameID', 'Quantity', 'Name']
+
