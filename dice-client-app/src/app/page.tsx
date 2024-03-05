@@ -13,65 +13,106 @@ import {
 import { MagnifyingGlassIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import Recommendation from "@/components/CafeRecommendation";
 
-interface Cafe {
+interface ICafe {
   CafeID: number;
-  Name: string;
-  Location: string;
+  Name: String;
   PhoneNumber: string;
-  OperatingHour: string;
-  Image: string | null;
+  OperatingHour: String;
+  Image?: string;
 }
 
-const sampleCafeData: Cafe[] = [
-  {
-    CafeID: 1,
-    Name: "테스트 카페 1",
-    Location: "서울시 서초구 somewhere over the rainbow",
-    PhoneNumber: "010-1234-5678",
-    OperatingHour: "9:00 ~ 24:00",
-    Image: "https://www.jigsawexplorer.com/puzzles/subjects/spa-supplies.jpg",
-  },
-  {
-    CafeID: 2,
-    Name: "테스트 카페 2",
-    Location: "서울시 서초구 somewhere over the rainbow",
-    PhoneNumber: "010-1234-5678",
-    OperatingHour: "9:00 ~ 24:00",
-    Image: "https://www.jigsawexplorer.com/puzzles/subjects/avon-pub.jpg",
-  },
-  {
-    CafeID: 3,
-    Name: "테스트 카페 3",
-    Location: "서울시 서초구 somewhere over the rainbow",
-    PhoneNumber: "010-1234-5678",
-    OperatingHour: "9:00 ~ 24:00",
-    Image:
-      "https://www.jigsawexplorer.com/puzzles/subjects/island-hut-423x300.jpg",
-  },
-];
+interface IGame {
+  GameID: number;
+  Name: string;
+  MinPlayers: number;
+  MaxPlayers: number;
+  AgeLimit: number;
+  Description?: string;
+  VideoURL?: string;
+  Image?: string;
+  SearchCount: number;
+}
 
 export default function Home() {
-  const [cafeData, setCafeData] = useState<Cafe[]>([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [filterValue, setFilterValue] = useState("gamename");
+  const [cafeData, setCafeData] = useState<ICafe[]>([]);
+  const [gameData, setGameData] = useState<IGame[]>([]);
 
-  async function getCafe() {
-    try {
-      const response = await fetch("http://192.168.0.36:8000/cafe/cafe_p");
-      const cafe_data = await response.json();
-      return cafe_data;
-    } catch (error) {
-      return "Please check your server";
+  async function submitSearch() {
+    switch (filterValue) {
+      case "gamename":
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/boardgame/api/search_by_name/?boardgame_name=${searchValue}`
+          );
+          const board_game = await response.json();
+          console.log(board_game);
+          setGameData(board_game);
+          if (board_game) return board_game;
+        } catch (error) {
+          return "Please check your server";
+        }
+        break;
+      case "numberofpeople":
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/boardgame/api/search_by_number/?number_of_people=${searchValue}`
+          );
+          const board_game = await response.json();
+          console.log(board_game);
+          setGameData(board_game);
+          if (board_game) return board_game;
+        } catch (error) {
+          return "Please check your server";
+        }
+        break;
+      case "agelimit":
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/boardgame/api/boardgame_limit/?age=${searchValue}`
+          );
+          const board_game = await response.json();
+          console.log(board_game);
+          setGameData(board_game);
+          if (board_game) return board_game;
+        } catch (error) {
+          return "Please check your server";
+        }
+        break;
+      case "cafename":
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/cafe/api/search_by_name/?cafe_name=${searchValue}`
+          );
+          const board_game = await response.json();
+          setCafeData((prev) => board_game);
+          if (board_game) return board_game;
+        } catch (error) {
+          return "Please check your server";
+        }
+        break;
+      case "location":
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/cafe/api/location_contains/?location=${searchValue}`
+          );
+          const board_game = await response.json();
+          setCafeData((prev) => board_game);
+          if (board_game) return board_game;
+        } catch (error) {
+          return "Please check your server";
+        }
+        break;
+      default:
+        return [];
     }
   }
 
-  useEffect(() => {
-    getCafe().then((cafe_data) => {
-      setCafeData(cafe_data);
-    });
-  }, [cafeData]);
-
   return (
-    //TODO: 정렬 별점순 이메일 순
     <>
       <Flex direction={"column"} gap={"8"}>
         <Heading as="h1" className="text-center">
@@ -82,9 +123,8 @@ export default function Home() {
             <InfoCircledIcon />
           </Callout.Icon>
           <Callout.Text>
-            현재 검색 가능한 필터들은 아래와 같습니다. 뭔가를 바라시겠지만,
-            {"\n"}
-            이것이 우리의 한계! 국비 끝나면 업데이트 할수도? 안할수도.. 헿
+            이 프로젝트는 AWS Cloud School 4기 3조 박재연, 오현택, 이보림,
+            최재원이 만들었습니다. DB 구현을 목표로한 프로젝트입니다.
           </Callout.Text>
         </Callout.Root>
         <Flex gap="1" className="flex-col sm:flex-row w-full">
@@ -92,40 +132,106 @@ export default function Home() {
             <TextField.Slot>
               <MagnifyingGlassIcon height="16" width="16" />
             </TextField.Slot>
-            <TextField.Input size="3" placeholder="검색" />
+            <TextField.Input
+              size="3"
+              placeholder="검색"
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+            />
           </TextField.Root>
-          <Select.Root defaultValue="game" size="3">
-            <Select.Trigger />
+          <Select.Root
+            defaultValue="gamename"
+            size="3"
+            onValueChange={(value) => setFilterValue(value)}
+          >
+            <Select.Trigger className="w-1/5" />
             <Select.Content>
-              <Select.Item value="game">보드게임</Select.Item>
-              <Select.Item value="cafe">보드게임 카페</Select.Item>
-              <Select.Item value="gu">지역구</Select.Item>
-              <Select.Item value="city">행정구역</Select.Item>
+              <Select.Group>
+                <Select.Label>보드게임</Select.Label>
+                <Select.Item value="gamename">보드게임 이름</Select.Item>
+                <Select.Item value="numberofpeople">
+                  보드게임 인원 수
+                </Select.Item>
+                <Select.Item value="agelimit">연령 제한</Select.Item>
+              </Select.Group>
+              <Select.Separator />
+              <Select.Group>
+                <Select.Label>보드게임 카페</Select.Label>
+                <Select.Item value="cafename">보드게임 카페 이름</Select.Item>
+                <Select.Item value="location">보드게임 카페 위치</Select.Item>
+              </Select.Group>
             </Select.Content>
           </Select.Root>
-          <Button size="3">검색</Button>
+          <Button size="3" onClick={submitSearch}>
+            검색
+          </Button>
         </Flex>
-
-        <Grid columns="3" gap="3" width="auto">
-          {sampleCafeData.map((cafe) => (
-            <Card key={cafe.CafeID}>
-              {cafe.Image ? (
-                <Inset clip="padding-box" side="top" pb="current">
-                  <Image
-                    src={cafe.Image}
-                    width={500}
-                    height={500}
-                    alt="Picture of the author"
-                  ></Image>
-                </Inset>
-              ) : null}
-              <h2>{cafe.Name}</h2>
-              <p>{cafe.Location}</p>
-              <p>{cafe.PhoneNumber}</p>
-              <p>{cafe.OperatingHour}</p>
-            </Card>
-          ))}
-        </Grid>
+        {cafeData.length === 0 ? (
+          <></>
+        ) : (
+          <>
+            <Heading>검색 결과</Heading>
+            <Grid columns="3" gap="3" width="auto">
+              {cafeData.map((cafe) => (
+                <Card key={cafe.CafeID}>
+                  <Link href={`/cafe/${cafe.CafeID}`}>
+                    {cafe.Image ? (
+                      <Inset clip="padding-box" side="top" pb="current">
+                        <Image
+                          src={cafe.Image}
+                          width={500}
+                          height={500}
+                          alt="Picture of the author"
+                        ></Image>
+                      </Inset>
+                    ) : null}
+                    <h2>{cafe.Name}</h2>
+                    <p>가게 전화번호</p>
+                    <p>{cafe.PhoneNumber}</p>
+                    <p>가게 운영시간</p>
+                    <p>{cafe.OperatingHour}</p>
+                  </Link>
+                </Card>
+              ))}
+            </Grid>
+          </>
+        )}
+        {gameData.length === 0 ? (
+          <></>
+        ) : (
+          <>
+            <Heading>검색 결과</Heading>
+            <Grid columns="3" gap="3" width="auto">
+              {gameData.map((game) => (
+                <Card key={game.GameID}>
+                  <Link href={`/boardgame/${game.GameID}`}>
+                    {game.Image ? (
+                      <Inset clip="padding-box" side="top" pb="current">
+                        <Image
+                          src={game.Image}
+                          width={500}
+                          height={500}
+                          alt="Picture of the author"
+                        ></Image>
+                      </Inset>
+                    ) : null}
+                    <h2>{game.Name}</h2>
+                    <p>플레이 인원</p>
+                    <p>
+                      {game.MinPlayers} ~ {game.MaxPlayers}
+                    </p>
+                    <p>연령 제한</p>
+                    <p>{game.AgeLimit}살</p>
+                  </Link>
+                </Card>
+              ))}
+            </Grid>
+          </>
+        )}
+        <Heading>보드게임 및 보드게임 카페 추천</Heading>
+        <Recommendation />
       </Flex>
     </>
   );
