@@ -7,6 +7,7 @@ from boardgames.models import BoardGames, BoardGameReviews, CafeBoardGames
 from boardgames.serializers import BoardGamesSerializer, BoardGameReviewSerializer, CafeBoardGamesSerializer, CafeGamesSerializer
 from django.db.models import Count, Avg, F, Value
 from cafes.models import Cafes
+from django.db.models.functions import Lower
 
 class BoardGameView(viewsets.ModelViewSet):
     queryset = BoardGames.objects.all()
@@ -44,8 +45,8 @@ class BoardGameView(viewsets.ModelViewSet):
 
         if not boardgame_name:
             return Response({'error': 'boardgame name is required'}, status=400)
-
-        queryset = BoardGames.objects.filter(Name__contains=boardgame_name).order_by('Name')
+        queryset = BoardGames.objects.annotate(game_name_lower=Lower('Name'))
+        queryset = queryset.filter(game_name_lower__contains=boardgame_name.lower()).order_by('Name')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
@@ -56,7 +57,7 @@ class BoardGameView(viewsets.ModelViewSet):
         if not number_of_people:
             return Response({'error': 'number of people is reauired'}, status=400)
         
-        queryset = BoardGames.objects.filter(MinPlayers__gte=number_of_people).filter(MaxPlayers__lte=number_of_people)
+        queryset = BoardGames.objects.filter(MinPlayers__lte=number_of_people).filter(MaxPlayers__gte=number_of_people)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
@@ -100,7 +101,7 @@ class BoardGameReviewView(viewsets.ModelViewSet):
         if not user_id:
             return Response({'error': 'userid is required'}, status=400)
         
-        queryset = BoardGameReviews.objects.filter(UserID__contains= user_id)
+        queryset = BoardGameReviews.objects.filter(UserID= user_id)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
