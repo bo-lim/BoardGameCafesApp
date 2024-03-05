@@ -53,7 +53,7 @@ class CafeAPI(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def location_contains(self, request):
-        location = request.query_params.get('loaction')
+        location = request.query_params.get('location')
 
         if not location:
             return Response({'error': 'location is required'}, status=400)
