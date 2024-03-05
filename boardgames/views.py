@@ -104,12 +104,7 @@ class BoardGameReviewView(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'])
-    def find_cafe_with_game(self, request):
-        game_name = request.query_params.get('user_name')
-
-        if not game_name:
-            return Response({'error': 'userid is required'}, status=400)
+    
         
         
 
