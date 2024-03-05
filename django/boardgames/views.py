@@ -103,9 +103,6 @@ class BoardGameReviewView(viewsets.ModelViewSet):
         queryset = BoardGameReviews.objects.filter(UserID__contains= user_id)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-        
-        
-
 
 class CafeBoardGamesView(viewsets.ModelViewSet):
     queryset = CafeBoardGames.objects.all()
