@@ -19,6 +19,7 @@ const SignInPage = () => {
   const [userpwd, setUserpwd] = useState("");
   const [pwdEyes, setPwdEyes] = useState(false);
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const usernameHandleChange = (value: string) => {
     //console.log(value);
@@ -54,9 +55,13 @@ const SignInPage = () => {
         // setUsername("");
         // setUserpwd("");
         router.push("/");
+      } else {
+        setUsername("");
+        setUserpwd("");
+        setErrorMessage((prev) => "아이디와 비밀번호를 확인해주세요!");
       }
     } catch (error) {
-      console.log(error);
+      console.log("login failed");
     }
     //console.log("Login");
     //console.log(userI);
@@ -109,9 +114,21 @@ const SignInPage = () => {
               </TextField.Root>
             </Flex>
           </Text>
-          <Button size="3" variant="soft" onClick={submitLogin}>
+          <Button
+            size="3"
+            variant="soft"
+            onClick={submitLogin}
+            disabled={username !== "" && userpwd !== "" ? false : true}
+          >
             로그인
           </Button>
+          {errorMessage === "" ? (
+            <></>
+          ) : (
+            <Text color="red" weight={"bold"}>
+              {errorMessage}
+            </Text>
+          )}
           <span>
             <Text className="pr-3">아직 가입을 안하셨나요?</Text>
             <Button variant="ghost" size="3" className="underline">

@@ -12,6 +12,7 @@ import {
   Select,
   Grid,
   Inset,
+  Text,
 } from "@radix-ui/themes";
 import Link from "next/link";
 
@@ -98,7 +99,7 @@ const GameRecommendation = () => {
   return (
     <div>
       {" "}
-      <Grid columns="3" gap="3" width="auto">
+      <Grid columns={{ xs: "1", md: "3" }} gap="3" width="auto">
         <Card>
           <Heading className="justify-center text-center py-3">
             인기 게임
@@ -111,10 +112,13 @@ const GameRecommendation = () => {
                 className="pl-10 py-2"
                 gap={"2"}
               >
-                <h2>
+                <Text>
                   {i + 1}. {cafe.Name}
-                </h2>
-                <p> (최대 {cafe.MaxPlayers}명)</p>
+                </Text>
+                <p className="text-base text-gray-700 hover:text-blue-500">
+                  {" "}
+                  (최대 {cafe.MaxPlayers}명)
+                </p>
               </Flex>
             </Link>
           ))}

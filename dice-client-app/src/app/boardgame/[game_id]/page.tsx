@@ -12,6 +12,7 @@ import {
   Grid,
   Inset,
   TextArea,
+  Text,
 } from "@radix-ui/themes";
 import Link from "next/link";
 
@@ -35,6 +36,7 @@ interface IReview {
   Date: string;
   UserID: number;
   BoardGameID: number;
+  nickname: string;
 }
 
 interface ICafe {
@@ -56,6 +58,35 @@ const page = () => {
   const params = useParams<{ game_id: string }>();
 
   const [userInfo, setUserInfo] = useState<string | null>(null);
+
+  function getRating(value: number) {
+    switch (value) {
+      case 5:
+        return <p>🌕🌕🌕🌕🌕</p>;
+      case 4.5:
+        return <p>🌕🌕🌕🌕🌗</p>;
+      case 4.0:
+        return <p>🌕🌕🌕🌕🌑</p>;
+      case 3.5:
+        return <p>🌕🌕🌕🌗🌑</p>;
+      case 3.0:
+        return <p>🌕🌕🌕🌑🌑</p>;
+      case 2.5:
+        return <p>🌕🌕🌗🌑🌑</p>;
+      case 2.0:
+        return <p>🌕🌕🌑🌑🌑</p>;
+      case 1.5:
+        return <p>🌕🌗🌑🌑🌑</p>;
+      case 1.0:
+        return <p>🌕🌑🌑🌑🌑</p>;
+      case 0.5:
+        return <p>🌗🌑🌑🌑🌑</p>;
+      case 0.0:
+        return <p>🌑🌑🌑🌑🌑</p>;
+      default:
+        return <></>;
+    }
+  }
 
   async function getCafeData() {
     try {
@@ -86,14 +117,14 @@ const page = () => {
   async function getReviews() {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/boardgame/review/api`
+        `${process.env.NEXT_PUBLIC_API_URL}/boardgame/review/api/search_by_id/?game_id=${params.game_id}`
       );
       const game_review = await response.json();
-      const FilteredGame = game_review.filter(
-        (user: IReview) => user.BoardGameID === Number(params.game_id)
-      );
+      // const FilteredGame = game_review.filter(
+      //   (user: IReview) => user.BoardGameID === Number(params.game_id)
+      // );
       //console.log(FilteredGame);
-      setReviewData(FilteredGame);
+      setReviewData(game_review);
       if (game_review) return game_review;
     } catch (error) {
       return "Please check your server";
@@ -145,7 +176,9 @@ const page = () => {
             <Card>
               {boardGame.map((game) => (
                 <Flex gap={"3"} direction={"column"}>
-                  <Heading>{game.Name}</Heading>
+                  <Text color="iris" size={"4"} weight={"bold"}>
+                    {game.Name}
+                  </Text>
                   <Flex gap={"9"}>
                     <div>
                       <p>게임 플레이 인원</p>
@@ -191,8 +224,21 @@ const page = () => {
           <Flex direction={"column"} gap={"3"}>
             {reviewData.map((uReview) => (
               <div>
-                <p>{uReview.UserID}</p>
-                <p>날짜: {new Date(uReview.Date).toLocaleDateString()}</p>
+                <Flex
+                  justify={{ xs: "between", md: "start" }}
+                  gap={{ xs: "1", md: "5" }}
+                >
+                  <div className="min-w-18">
+                    {" "}
+                    <Text color="iris" weight={"bold"}>
+                      {uReview.nickname}
+                    </Text>
+                  </div>
+
+                  {getRating(uReview.Rating)}
+                  <p>{new Date(uReview.Date).toLocaleDateString()}</p>
+                </Flex>
+
                 <p>{uReview.Comment}</p>
               </div>
             ))}
@@ -216,7 +262,7 @@ const page = () => {
                 <Select.Item value="5">(5.0) 🌕🌕🌕🌕🌕 </Select.Item>
                 <Select.Item value="4.5">(4.5) 🌕🌕🌕🌕🌗 </Select.Item>
                 <Select.Item value="4">(4.0) 🌕🌕🌕🌕🌑</Select.Item>
-                <Select.Item value="3.5">(3.5) 🌕🌕🌕🌗</Select.Item>
+                <Select.Item value="3.5">(3.5) 🌕🌕🌕🌗🌑</Select.Item>
                 <Select.Item value="3">(3.0) 🌕🌕🌕🌑🌑</Select.Item>
                 <Select.Item value="2.5">(2.5) 🌕🌕🌗🌑🌑</Select.Item>
                 <Select.Item value="2">(2.0) 🌕🌕🌑🌑🌑</Select.Item>

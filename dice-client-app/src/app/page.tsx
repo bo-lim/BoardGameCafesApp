@@ -9,6 +9,7 @@ import {
   Select,
   Grid,
   Inset,
+  Text,
 } from "@radix-ui/themes";
 import { MagnifyingGlassIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
@@ -146,7 +147,7 @@ export default function Home() {
             size="3"
             onValueChange={(value) => setFilterValue(value)}
           >
-            <Select.Trigger className="w-1/5" />
+            <Select.Trigger className="xs:w-full md:w-1/5" />
             <Select.Content>
               <Select.Group>
                 <Select.Label>보드게임</Select.Label>
@@ -173,11 +174,11 @@ export default function Home() {
         ) : (
           <>
             <Heading>검색 결과</Heading>
-            <Grid columns="3" gap="3" width="auto">
+            <Grid columns={{ xs: "1", md: "4" }} gap="3" width="auto">
               {cafeData.map((cafe) => (
                 <Card key={cafe.CafeID}>
                   <Link href={`/cafe/${cafe.CafeID}`}>
-                    {cafe.Image ? (
+                    {/* {cafe.Image ? (
                       <Inset clip="padding-box" side="top" pb="current">
                         <Image
                           src={cafe.Image}
@@ -186,8 +187,10 @@ export default function Home() {
                           alt="Picture of the author"
                         ></Image>
                       </Inset>
-                    ) : null}
-                    <h2>{cafe.Name}</h2>
+                    ) : null} */}
+                    <Text color="iris" weight={"bold"} size={"5"}>
+                      {cafe.Name}
+                    </Text>
                     <p>가게 전화번호</p>
                     <p>{cafe.PhoneNumber}</p>
                     <p>가게 운영시간</p>
@@ -203,11 +206,11 @@ export default function Home() {
         ) : (
           <>
             <Heading>검색 결과</Heading>
-            <Grid columns="3" gap="3" width="auto">
+            <Grid columns={{ xs: "2", md: "4" }} gap="3" width="auto">
               {gameData.map((game) => (
                 <Card key={game.GameID}>
                   <Link href={`/boardgame/${game.GameID}`}>
-                    {game.Image ? (
+                    {/* {game.Image ? (
                       <Inset clip="padding-box" side="top" pb="current">
                         <Image
                           src={game.Image}
@@ -216,8 +219,10 @@ export default function Home() {
                           alt="Picture of the author"
                         ></Image>
                       </Inset>
-                    ) : null}
-                    <h2>{game.Name}</h2>
+                    ) : null} */}
+                    <Text color="iris" weight={"bold"} size={"5"}>
+                      {game.Name}
+                    </Text>
                     <p>플레이 인원</p>
                     <p>
                       {game.MinPlayers} ~ {game.MaxPlayers}

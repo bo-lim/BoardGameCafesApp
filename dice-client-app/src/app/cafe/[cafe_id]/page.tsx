@@ -12,6 +12,7 @@ import {
   Grid,
   Inset,
   TextArea,
+  Text,
 } from "@radix-ui/themes";
 import Link from "next/link";
 
@@ -51,6 +52,35 @@ const page = () => {
   const params = useParams<{ cafe_id: string }>();
 
   const [userInfo, setUserInfo] = useState<string | null>(null);
+
+  function getRating(value: number) {
+    switch (value) {
+      case 5:
+        return <p>🌕🌕🌕🌕🌕</p>;
+      case 4.5:
+        return <p>🌕🌕🌕🌕🌗</p>;
+      case 4.0:
+        return <p>🌕🌕🌕🌕🌑</p>;
+      case 3.5:
+        return <p>🌕🌕🌕🌗🌑</p>;
+      case 3.0:
+        return <p>🌕🌕🌕🌑🌑</p>;
+      case 2.5:
+        return <p>🌕🌕🌗🌑🌑</p>;
+      case 2.0:
+        return <p>🌕🌕🌑🌑🌑</p>;
+      case 1.5:
+        return <p>🌕🌗🌑🌑🌑</p>;
+      case 1.0:
+        return <p>🌕🌑🌑🌑🌑</p>;
+      case 0.5:
+        return <p>🌗🌑🌑🌑🌑</p>;
+      case 0.0:
+        return <p>🌑🌑🌑🌑🌑</p>;
+      default:
+        return <></>;
+    }
+  }
 
   async function getCafeData() {
     try {
@@ -137,8 +167,10 @@ const page = () => {
             <Card>
               {cafeData.map((cafe) => (
                 <Flex direction={"column"} gap={"3"}>
-                  <h2>{cafe.Name}</h2>
-                  <p>운영 시간</p>
+                  <Text color="iris" size={"4"} weight={"bold"}>
+                    {cafe.Name}
+                  </Text>
+                  <Text>운영 시간</Text>
                   <p>{cafe.OperatingHour}</p>
                   <p>주소</p>
                   <p>{cafe.Location}</p>
@@ -167,8 +199,17 @@ const page = () => {
           <Flex direction={"column"} gap={"3"}>
             {reviewData.map((uReview) => (
               <div>
-                <p>{uReview.UserID}</p>
-                <p>날짜: {new Date(uReview.Date).toLocaleDateString()}</p>
+                <Flex
+                  justify={{ xs: "between", md: "start" }}
+                  gap={{ xs: "1", md: "5" }}
+                >
+                  <Text color="iris" weight={"bold"}>
+                    {uReview.UserID}
+                  </Text>
+                  {getRating(uReview.Rating)}
+                  <p>{new Date(uReview.Date).toLocaleDateString()}</p>
+                </Flex>
+
                 <p>{uReview.Comment}</p>
               </div>
             ))}

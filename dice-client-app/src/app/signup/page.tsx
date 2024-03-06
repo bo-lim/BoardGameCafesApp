@@ -22,10 +22,31 @@ const SignUpPage = () => {
   const [gender, setGender] = useState("F");
   const [pwd, setPwd] = useState("");
   const [pwdCheck, setPwdCheck] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
 
-  function handlePasswordCheck(value: string) {}
+  function handlePasswordCheck(value: string) {
+    if (pwd !== value) {
+      setErrorMessage(
+        (prev) => "비밀번호가 일치하지 않아요! 확인 부탁드립니다!"
+      );
+    } else {
+      setErrorMessage("");
+      setPwdCheck((prev) => value);
+    }
+  }
+
+  function handlePassword(value: string) {
+    if (value.length < 6) {
+      setErrorMessage(
+        (prev) => "비밀번호가 너무 짧아요! 최소 7자 이상 해주세요!"
+      );
+    } else {
+      setErrorMessage("");
+      setPwd((prev) => value);
+    }
+  }
 
   async function submitSignup() {
     const signupInfo = {
@@ -57,10 +78,20 @@ const SignUpPage = () => {
 
           router.push("/");
         });
+      } else {
+        setErrorMessage("이미 존재하는 계정입니다.");
+        setEmail("");
       }
     } catch (error) {
       console.log(error);
     }
+  }
+
+  function handleEmailChange(value: string) {
+    if (errorMessage !== "") {
+      setErrorMessage("");
+    }
+    setEmail((prev) => value);
   }
 
   return (
@@ -82,7 +113,8 @@ const SignUpPage = () => {
                 <TextField.Input
                   size="3"
                   placeholder="이메일"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  value={email}
                 />
               </TextField.Root>
             </Flex>
@@ -131,7 +163,7 @@ const SignUpPage = () => {
                   size="3"
                   placeholder="비밀번호"
                   type="password"
-                  onChange={(e) => setPwd(e.target.value)}
+                  onChange={(e) => handlePassword(e.target.value)}
                 />
               </TextField.Root>
             </Flex>
@@ -145,18 +177,31 @@ const SignUpPage = () => {
                   size="3"
                   placeholder="비밀번호 확인"
                   type="password"
-                  onChange={(e) => setPwdCheck(e.target.value)}
+                  onChange={(e) => handlePasswordCheck(e.target.value)}
                 />
               </TextField.Root>
             </Flex>
           </Text>
           <Text as={"label"} size="3">
-            <Checkbox /> 이용양관 개인정보 및 정보이용에 동의합니다.
+            <Checkbox /> 이용약관 개인정보 및 정보이용에 동의합니다.(동의 안해도
+            회원가입 가능합니다)
           </Text>
 
-          <Button size="3" variant="soft" onClick={submitSignup}>
+          <Button
+            size="3"
+            variant="soft"
+            onClick={submitSignup}
+            disabled={errorMessage === "" ? false : true}
+          >
             회원가입
           </Button>
+          {errorMessage === "" ? (
+            <></>
+          ) : (
+            <Text color="red" weight={"bold"}>
+              {errorMessage}
+            </Text>
+          )}
         </Flex>
       </Card>
     </>

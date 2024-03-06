@@ -8,6 +8,12 @@ const nextConfig = {
         port: "",
         pathname: "/puzzles/subjects/**",
       },
+      {
+        protocol: "http",
+        hostname: "43.201.31.216",
+        port: "8000",
+        pathname: "/media/**",
+      },
     ],
   },
 };
