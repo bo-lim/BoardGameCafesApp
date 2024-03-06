@@ -5,7 +5,9 @@ from rest_framework import viewsets, status
 from django.db.models import Count, Avg, F, Value
 from django.db.models.functions import Coalesce
 
-from cafes.serializers import CafeReviewsSerializer, CafesSerializer, MenuItemsSerializer, ReviewCountSerializer, ReviewAvgSerializer, SearchByGameSerializer
+
+from cafes.serializers import CafeReviewsSerializer, CafesSerializer, MenuItemsSerializer, ReviewCountSerializer, ReviewAvgSerializer, SearchByGameSerializer, SearchCafeReviewSerializer
+
 from cafes.models import Cafes, CafeReviews, MenuItems
 from boardgames.models import BoardGames, CafeBoardGames
 
@@ -150,8 +152,19 @@ class CafeReviewAPI(viewsets.ModelViewSet):
         if not user_id:
             return Response({'error': 'userid is required'}, status=400)
         
-        queryset = CafeReviews.objects.filter(**{'UserID': user_id})
-        serializer = self.get_serializer(queryset, many=True)
+        queryset = CafeReviews.objects.filter(UserID=user_id)
+        serializer = SearchCafeReviewSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def search_by_cafe_id(self, request):
+        cafe_id = request.query_params.get('cafe_id')
+
+        if not cafe_id:
+            return Response({'error': 'userid is required'}, status=400)
+        
+        queryset = CafeReviews.objects.filter(CafeID=cafe_id)
+        serializer = SearchCafeReviewSerializer(queryset, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'])

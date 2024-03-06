@@ -35,3 +35,17 @@ class SearchByGameSerializer(serializers.Serializer):
     OperatingHour = serializers.CharField()
     Image = serializers.FileField()
     review_count = serializers.IntegerField()
+
+class SearchCafeReviewSerializer(serializers.ModelSerializer):
+    CafeReviewID = serializers.IntegerField()
+    UserID = serializers.IntegerField(source='UserID.id')
+    CafeID = serializers.IntegerField(source='CafeID.CafeID')
+    Rating = serializers.FloatField()
+    Comment = serializers.CharField()
+    Image = serializers.FileField()
+    Date = serializers.DateTimeField()
+    nickname = serializers.CharField(source='UserID.nickname')
+    class Meta:
+        model = CafeReviews
+        fields = ['CafeReviewID', 'UserID', 'CafeID', 'Rating', 'Comment', 'Image', 'Date', 'nickname']
+
