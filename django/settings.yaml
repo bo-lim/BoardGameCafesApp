@@ -1,8 +1,8 @@
-#USER: root
-USER: djangouser
-#PASSWORD: pass123#
-PASSWORD: oracle
-#HOST: db
-HOST: localhost
-#PORT: 3306
-PORT: 1521
+USER: root
+#USER: djangouser
+PASSWORD: pass123#
+#PASSWORD: oracle
+HOST: 43.201.31.216
+#HOST: localhost
+PORT: 3306
+#PORT: 1521

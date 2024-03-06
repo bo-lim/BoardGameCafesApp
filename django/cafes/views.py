@@ -156,16 +156,6 @@ class CafeReviewAPI(viewsets.ModelViewSet):
         serializer = SearchCafeReviewSerializer(queryset, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
-    def search_by_cafe_id(self, request):
-        cafe_id = request.query_params.get('cafe_id')
-
-        if not cafe_id:
-            return Response({'error': 'userid is required'}, status=400)
-        
-        queryset = CafeReviews.objects.filter(CafeID=cafe_id)
-        serializer = SearchCafeReviewSerializer(queryset, many=True)
-        return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def search_by_cafe_id(self, request):
@@ -174,7 +164,7 @@ class CafeReviewAPI(viewsets.ModelViewSet):
             return Response({"error": "Cafe ID is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         queryset = CafeReviews.objects.filter(CafeID=cafe_id)
-        serializer = CafeReviewsSerializer(queryset, many=True)
+        serializer = SearchCafeReviewSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
