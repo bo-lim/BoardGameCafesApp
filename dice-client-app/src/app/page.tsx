@@ -50,7 +50,7 @@ export default function Home() {
             `${process.env.NEXT_PUBLIC_API_URL}/boardgame/api/search_by_name/?boardgame_name=${searchValue}`
           );
           const board_game = await response.json();
-          console.log(board_game);
+          //console.log(board_game);
           setGameData(board_game);
           if (board_game) return board_game;
         } catch (error) {
@@ -63,7 +63,7 @@ export default function Home() {
             `${process.env.NEXT_PUBLIC_API_URL}/boardgame/api/search_by_number/?number_of_people=${searchValue}`
           );
           const board_game = await response.json();
-          console.log(board_game);
+          //console.log(board_game);
           setGameData(board_game);
           if (board_game) return board_game;
         } catch (error) {
@@ -76,7 +76,7 @@ export default function Home() {
             `${process.env.NEXT_PUBLIC_API_URL}/boardgame/api/boardgame_limit/?age=${searchValue}`
           );
           const board_game = await response.json();
-          console.log(board_game);
+          //console.log(board_game);
           setGameData(board_game);
           if (board_game) return board_game;
         } catch (error) {

@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@radix-ui/themes";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
-import { useUserStore } from "@/stores/user";
+
 import { useRouter } from "next/navigation";
 
 const SignInPage = () => {
@@ -19,9 +19,6 @@ const SignInPage = () => {
   const [userpwd, setUserpwd] = useState("");
   const [pwdEyes, setPwdEyes] = useState(false);
   const router = useRouter();
-
-  const loginUser = useUserStore((state) => state.loginUser);
-  //const userI = useUserStore((state) => state.userInfo);
 
   const usernameHandleChange = (value: string) => {
     //console.log(value);
@@ -52,14 +49,7 @@ const SignInPage = () => {
           // console.log(authToken);
           const userData = authData.user;
           //console.log(userData.id);
-
-          loginUser(
-            userData.id,
-            userData.email,
-            userData.nickname,
-            userData.age,
-            userData.gender
-          );
+          localStorage.setItem("userID", userData.id);
         });
         // setUsername("");
         // setUserpwd("");

@@ -13,7 +13,6 @@ import {
 } from "@radix-ui/themes";
 
 import { useState } from "react";
-import { useUserStore } from "@/stores/user";
 import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
@@ -23,7 +22,6 @@ const SignUpPage = () => {
   const [gender, setGender] = useState("F");
   const [pwd, setPwd] = useState("");
   const [pwdCheck, setPwdCheck] = useState("");
-  const loginUser = useUserStore((state) => state.loginUser);
 
   const router = useRouter();
 
@@ -54,15 +52,9 @@ const SignUpPage = () => {
           localStorage.setItem("accessToken", authToken);
           // console.log(authToken);
           const userData = authData.user;
-          console.log(userData.id);
+          //console.log(userData.id);
+          localStorage.setItem("userID", userData);
 
-          loginUser(
-            userData.id,
-            userData.email,
-            userData.nickname,
-            userData.age,
-            userData.gender
-          );
           router.push("/");
         });
       }

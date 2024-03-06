@@ -14,7 +14,6 @@ import {
   TextArea,
 } from "@radix-ui/themes";
 import Link from "next/link";
-import { useUserStore } from "@/stores/user";
 
 interface IGame {
   id: number;
@@ -51,7 +50,7 @@ const page = () => {
   const [rating, setRating] = useState("5");
   const params = useParams<{ cafe_id: string }>();
 
-  const userInfo = useUserStore((state) => state.userInfo);
+  const [userInfo, setUserInfo] = useState<string | null>(null);
 
   async function getCafeData() {
     try {
@@ -95,7 +94,7 @@ const page = () => {
 
   async function submitReview() {
     const userReview = {
-      UserID: userInfo[0].id,
+      UserID: Number(userInfo),
       CafeID: Number(params.cafe_id),
       Rating: Number(rating),
       Comment: review,
@@ -121,6 +120,8 @@ const page = () => {
   }
 
   useEffect(() => {
+    if (localStorage.getItem("userID") !== undefined)
+      setUserInfo(localStorage.getItem("userID"));
     getCafeData();
     getBoardGame();
     getReviews();
@@ -174,13 +175,11 @@ const page = () => {
           </Flex>
           <Flex direction={"column"} gap={"4"}>
             <TextArea
-              placeholder={
-                userInfo.length === 0 ? "로그인 후 이용해주세요" : "리뷰 남기기"
-              }
+              placeholder={userInfo ? "리뷰 남기기" : "로그인 후 이용해주세요"}
               size={"3"}
               className="w-full"
               value={review}
-              disabled={userInfo.length === 0 ? true : false}
+              disabled={userInfo ? false : true}
               onChange={(e) => setReview(e.target.value)}
             />
             <Select.Root
@@ -203,10 +202,7 @@ const page = () => {
                 <Select.Item value="0">(0.0) 🌑🌑🌑🌑🌑</Select.Item>
               </Select.Content>
             </Select.Root>
-            <Button
-              onClick={submitReview}
-              disabled={userInfo.length === 0 ? true : false}
-            >
+            <Button onClick={submitReview} disabled={userInfo ? false : true}>
               리뷰 남기기
             </Button>
           </Flex>

@@ -1,16 +1,24 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Heading, Button, IconButton } from "@radix-ui/themes";
 import { RowsIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/stores/user";
 
 const Navbar = () => {
   const router = useRouter();
 
-  const userInfo = useUserStore((state) => state.userInfo);
-  const logoutUser = useUserStore((state) => state.removeUser);
-  console.log(userInfo);
+  const [logined, setLogined] = useState(false);
+  const [userId, setUserId] = useState("");
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    //console.log(accessToken);
+    //console.log(logined);
+    if (accessToken) {
+      //console.log("whatthe");
+      setLogined((prev) => true);
+      //console.log(logined);
+    }
+  }, []);
 
   // if (
   //   userInfo.length === 0 &&
@@ -21,8 +29,8 @@ const Navbar = () => {
   // }
 
   function Logout() {
-    logoutUser();
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("userID");
     router.push("/");
   }
   return (
@@ -42,13 +50,13 @@ const Navbar = () => {
             </Button>
           </a>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            {userInfo.length === 0 ? (
-              <Button size="3" onClick={() => router.push("/signin")}>
-                로그인
-              </Button>
-            ) : (
+            {logined ? (
               <Button size="3" onClick={Logout}>
                 로그아웃
+              </Button>
+            ) : (
+              <Button size="3" onClick={() => router.push("/signin")}>
+                로그인
               </Button>
             )}
 
