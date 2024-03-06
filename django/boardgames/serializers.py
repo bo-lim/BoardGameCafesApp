@@ -28,3 +28,16 @@ class CafeGamesSerializer(serializers.ModelSerializer):
         model = CafeBoardGames
         fields = ['id', 'CafeID', 'GameID', 'Quantity', 'Name']
 
+
+class SearchGameReviewSerializer(serializers.ModelSerializer):
+    Board_ReviewID = serializers.IntegerField()
+    UserID = serializers.IntegerField(source='UserID.id')
+    BoardGameID = serializers.IntegerField(source='BoardGameID.GameID')
+    Rating = serializers.FloatField()
+    Comment = serializers.CharField()
+    Image = serializers.FileField()
+    Date = serializers.DateTimeField()
+    nickname = serializers.CharField(source='UserID.nickname')
+    class Meta:
+        model = BoardGameReviews
+        fields = ['Board_ReviewID', 'UserID', 'BoardGameID', 'Rating', 'Comment', 'Image', 'Date', 'nickname']

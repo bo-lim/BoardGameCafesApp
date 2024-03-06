@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from boardgames.models import BoardGames, BoardGameReviews, CafeBoardGames
-from boardgames.serializers import BoardGamesSerializer, BoardGameReviewSerializer, CafeBoardGamesSerializer, CafeGamesSerializer
+from boardgames.serializers import BoardGamesSerializer, BoardGameReviewSerializer, CafeBoardGamesSerializer, CafeGamesSerializer, SearchGameReviewSerializer
 from django.db.models import Count, Avg, F, Value
 from cafes.models import Cafes
 
@@ -45,7 +45,7 @@ class BoardGameView(viewsets.ModelViewSet):
         if not boardgame_name:
             return Response({'error': 'boardgame name is required'}, status=400)
 
-        queryset = BoardGames.objects.filter(Name__contains=boardgame_name).order_by('Name')
+        queryset = BoardGames.objects.filter(Name__icontains=boardgame_name.lower()).order_by('Name')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
@@ -56,7 +56,7 @@ class BoardGameView(viewsets.ModelViewSet):
         if not number_of_people:
             return Response({'error': 'number of people is reauired'}, status=400)
         
-        queryset = BoardGames.objects.filter(MinPlayers__gte=number_of_people).filter(MaxPlayers__lte=number_of_people)
+        queryset = BoardGames.objects.filter(MinPlayers__lte=number_of_people).filter(MaxPlayers__gte=number_of_people)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
@@ -102,6 +102,25 @@ class BoardGameReviewView(viewsets.ModelViewSet):
         
         queryset = BoardGameReviews.objects.filter(UserID__contains= user_id)
         serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+    @action(detail=False, methods=['get'])
+    def find_cafe_with_game(self, request):
+        game_name = request.query_params.get('user_name')
+
+        if not game_name:
+            return Response({'error': 'userid is required'}, status=400)
+        
+    @action(detail=False, methods=['get'])
+    def search_by_id(self, request):
+        game_id = request.query_params.get('game_id')
+
+        if not game_id:
+            return Response({'error': 'cafe name is reauired'}, status=400)
+        
+        queryset = BoardGameReviews.objects.filter(BoardGameID=game_id)
+        serializer = SearchGameReviewSerializer(queryset, many=True)
         return Response(serializer.data)
 
 class CafeBoardGamesView(viewsets.ModelViewSet):
