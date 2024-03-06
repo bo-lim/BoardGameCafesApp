@@ -48,3 +48,4 @@ class SearchCafeReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = CafeReviews
         fields = ['CafeReviewID', 'UserID', 'CafeID', 'Rating', 'Comment', 'Image', 'Date', 'nickname']
+

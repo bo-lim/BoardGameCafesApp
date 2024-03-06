@@ -10,10 +10,10 @@ const Footer: React.FC = () => {
     <footer className="bg-customBlue text-white p-4">
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
-          <p>© 2024 Your Website. All rights reserved.</p>
+          <p>© 2024 다있으 DICE . All rights reserved.</p>
           <Tooltip>
             <a href="#" className="text-blue-300 hover:text-blue-400">
-              AWS Cloud School
+              AWS Cloud School 3조 이보림, 최재원, 오현택, 박재연
             </a>
           </Tooltip>
         </div>

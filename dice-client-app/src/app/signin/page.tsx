@@ -1,10 +1,67 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import Link from "next/link";
+import {
+  Flex,
+  Card,
+  Button,
+  Heading,
+  TextField,
+  Text,
+  IconButton,
+} from "@radix-ui/themes";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+
 import { useRouter } from "next/navigation";
-import { Flex, Card, Button, Heading, TextField, Text } from "@radix-ui/themes";
 
 const SignInPage = () => {
+  const [username, setUsername] = useState("");
+  const [userpwd, setUserpwd] = useState("");
+  const [pwdEyes, setPwdEyes] = useState(false);
   const router = useRouter();
+
+  const usernameHandleChange = (value: string) => {
+    //console.log(value);
+    setUsername((prev) => value);
+    //console.log(username);
+  };
+
+  const pwdHandleChange = (value: string) => {
+    setUserpwd((prev) => value);
+    //console.log(userpwd);
+  };
+
+  async function submitLogin() {
+    const loginInfo = { email: username, password: userpwd };
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/auth`, {
+        method: "POST",
+        body: JSON.stringify(loginInfo),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+      if (res.ok) {
+        res.json().then((authData) => {
+          const authToken = authData.token.access;
+          localStorage.setItem("accessToken", authToken);
+          // console.log(authToken);
+          const userData = authData.user;
+          //console.log(userData.id);
+          localStorage.setItem("userID", userData.id);
+        });
+        // setUsername("");
+        // setUserpwd("");
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    //console.log("Login");
+    //console.log(userI);
+  }
+
   return (
     <>
       <Card size="5">
@@ -21,7 +78,12 @@ const SignInPage = () => {
             <Flex direction={"column"} gap="2">
               아이디
               <TextField.Root>
-                <TextField.Input size="3" placeholder="아이디" />
+                <TextField.Input
+                  size="3"
+                  placeholder="아이디"
+                  onChange={(e) => usernameHandleChange(e.target.value)}
+                  value={username}
+                />
               </TextField.Root>
             </Flex>
           </Text>
@@ -29,22 +91,31 @@ const SignInPage = () => {
             <Flex direction={"column"} gap="2">
               비밀번호
               <TextField.Root>
-                <TextField.Input size="3" placeholder="비밀번호" />
+                <TextField.Input
+                  size="3"
+                  type={pwdEyes ? "text" : "password"}
+                  placeholder="비밀번호"
+                  onChange={(e) => pwdHandleChange(e.target.value)}
+                  value={userpwd}
+                />
+                <TextField.Slot>
+                  <IconButton
+                    variant="ghost"
+                    onClick={() => setPwdEyes(!pwdEyes)}
+                  >
+                    {pwdEyes ? <EyeOpenIcon /> : <EyeClosedIcon />}
+                  </IconButton>
+                </TextField.Slot>
               </TextField.Root>
             </Flex>
           </Text>
-          <Button size="3" variant="soft">
+          <Button size="3" variant="soft" onClick={submitLogin}>
             로그인
           </Button>
           <span>
             <Text className="pr-3">아직 가입을 안하셨나요?</Text>
-            <Button
-              variant="ghost"
-              size="3"
-              className="underline"
-              onClick={() => router.push("/signup")}
-            >
-              회원가입
+            <Button variant="ghost" size="3" className="underline">
+              <Link href="/signup">회원가입</Link>
             </Button>
           </span>
         </Flex>

@@ -28,6 +28,7 @@ class CafeGamesSerializer(serializers.ModelSerializer):
         model = CafeBoardGames
         fields = ['id', 'CafeID', 'GameID', 'Quantity', 'Name']
 
+
 class SearchGameReviewSerializer(serializers.ModelSerializer):
     Board_ReviewID = serializers.IntegerField()
     UserID = serializers.IntegerField(source='UserID.id')

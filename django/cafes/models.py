@@ -34,5 +34,3 @@ class MenuItems(models.Model):
 
     def __str__(self):
         return self.Item
-
-# Create your models here.

@@ -104,6 +104,7 @@ class BoardGameReviewView(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+
     @action(detail=False, methods=['get'])
     def find_cafe_with_game(self, request):
         game_name = request.query_params.get('user_name')
@@ -121,9 +122,6 @@ class BoardGameReviewView(viewsets.ModelViewSet):
         queryset = BoardGameReviews.objects.filter(BoardGameID=game_id)
         serializer = SearchGameReviewSerializer(queryset, many=True)
         return Response(serializer.data)
-        
-        
-
 
 class CafeBoardGamesView(viewsets.ModelViewSet):
     queryset = CafeBoardGames.objects.all()
